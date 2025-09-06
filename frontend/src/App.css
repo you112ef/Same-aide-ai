@@ -99,15 +99,44 @@ body {
   flex-shrink: 0;
 }
 
-.file-explorer-header {
+.file-explorer-header, .code-editor-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
+  flex-shrink: 0;
+}
+
+.file-explorer-content ul {
+  list-style: none;
+  padding: 0;
+}
+
+.file-button {
+  background: none;
+  border: none;
+  color: inherit;
+  text-align: left;
+  padding: 4px 0;
+  cursor: pointer;
+  width: 100%;
+}
+
+.file-button:hover {
+  background-color: #3a3a3a;
 }
 
 .editor-placeholder {
   flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #888;
+}
+
+.code-editor-container {
+  height: 100%;
+  width: 100%;
 }
 
 h2, h3 {

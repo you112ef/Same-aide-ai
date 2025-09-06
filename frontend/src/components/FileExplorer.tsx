@@ -4,14 +4,14 @@ import { Message } from './ChatMessage';
 interface FileExplorerProps {
   messages: Message[];
   onSendMessage: (message: string) => void;
+  onFileSelect: (filePath: string) => void;
 }
 
-const FileExplorer: React.FC<FileExplorerProps> = ({ messages, onSendMessage }) => {
-  // Find the most recent successful 'list_files' tool result in the messages
+const FileExplorer: React.FC<FileExplorerProps> = ({ messages, onSendMessage, onFileSelect }) => {
   const lastFileResult = useMemo(() => {
     const fileToolMessages = messages
       .filter(msg => msg.type === 'tool_result' && msg.toolName === 'list_files' && !msg.content.error);
-    return fileToolMessages.pop(); // Get the last one
+    return fileToolMessages.pop();
   }, [messages]);
 
   const handleRefresh = () => {
@@ -28,7 +28,11 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ messages, onSendMessage }) 
         {lastFileResult ? (
           <ul>
             {lastFileResult.content.files.map((file: string) => (
-              <li key={file}><code>{file}</code></li>
+              <li key={file}>
+                <button className="file-button" onClick={() => onFileSelect(file)}>
+                  <code>{file}</code>
+                </button>
+              </li>
             ))}
           </ul>
         ) : (
