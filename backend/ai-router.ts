@@ -1,30 +1,33 @@
 import OpenAI from 'openai';
 
-// This is where you'd securely get your API key, e.g., from process.env
 const apiKey = process.env.OPENAI_API_KEY;
 
 if (!apiKey) {
   console.warn("OPENAI_API_KEY environment variable not set. AI Router will not function.");
 }
 
-const openai = new OpenAI({
-  apiKey: apiKey,
-});
+const openai = new OpenAI({ apiKey });
 
-// Define the structure for a tool call that our application understands
 export interface ToolCall {
   toolName: string;
   args: any;
 }
 
-// Define the tools available to the AI in the format OpenAI's API expects
 const tools: OpenAI.Chat.Completions.ChatCompletionTool[] = [
   {
     type: "function",
     function: {
       name: "list_files",
-      description: "List all files and directories in the current project directory.",
-      parameters: { type: "object", properties: {} },
+      description: "List all files and directories in a specified project directory. Defaults to the root directory.",
+      parameters: {
+        type: "object",
+        properties: {
+          path: {
+            type: "string",
+            description: "The path to the directory to list. e.g., 'src/components'. Optional.",
+          },
+        },
+      },
     },
   },
   {
@@ -72,7 +75,6 @@ const tools: OpenAI.Chat.Completions.ChatCompletionTool[] = [
   },
 ];
 
-// The main router function that calls the AI model
 export async function route(message: string): Promise<ToolCall | { chatResponse: string } | null> {
   if (!apiKey) {
     return { chatResponse: "AI provider is not configured. Please set the OPENAI_API_KEY environment variable." };
@@ -80,7 +82,7 @@ export async function route(message: string): Promise<ToolCall | { chatResponse:
 
   try {
     const response = await openai.chat.completions.create({
-      model: "gpt-4-turbo", // Or another model that supports tool calling
+      model: "gpt-4-turbo",
       messages: [
         {
           role: "system",
@@ -96,14 +98,12 @@ export async function route(message: string): Promise<ToolCall | { chatResponse:
     const toolCalls = responseMessage.tool_calls;
 
     if (toolCalls && toolCalls.length > 0) {
-      // The AI decided to call a tool
-      const toolCall = toolCalls[0]; // For now, we only handle the first tool call
+      const toolCall = toolCalls[0];
       return {
         toolName: toolCall.function.name,
         args: JSON.parse(toolCall.function.arguments),
       };
     } else {
-      // The AI decided to respond with a chat message
       return { chatResponse: responseMessage.content || "I don't have a response for that." };
     }
 

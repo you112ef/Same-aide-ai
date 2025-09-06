@@ -1,14 +1,23 @@
 import fs from 'fs/promises';
+import path from 'path';
 
-export async function list_files(): Promise<{ files: string[] } | { error: string }> {
+interface ListFilesArgs {
+  path?: string;
+}
+
+export async function list_files({ path: dirPath = '.' }: ListFilesArgs): Promise<{ files: string[] } | { error: string }> {
   try {
-    // The current working directory in the sandbox should be the repo root.
-    const dirents = await fs.readdir('./', { withFileTypes: true });
+    // Security check to prevent path traversal
+    if (dirPath.includes('..') || path.isAbsolute(dirPath)) {
+      return { error: "Error: Path traversal is not allowed." };
+    }
+
+    const dirents = await fs.readdir(dirPath, { withFileTypes: true });
     // Add a trailing slash to directories
     const files = dirents.map(dirent => dirent.isDirectory() ? `${dirent.name}/` : dirent.name);
     return { files };
   } catch (error: any) {
-    console.error("Error in list_files tool:", error);
-    return { error: `Error listing files: ${error.message}` };
+    console.error(`Error in list_files tool for path '${dirPath}':`, error);
+    return { error: `Error listing files in '${dirPath}': ${error.message}` };
   }
 }
