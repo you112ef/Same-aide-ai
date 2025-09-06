@@ -2,12 +2,14 @@ import { route } from './ai-router';
 import { list_files } from './tools/list_files';
 import { read_file } from './tools/read_file';
 import { edit_file } from './tools/edit_file';
+import { run_bash_command } from './tools/run_bash_command';
 
 // A map to hold our tools for easy lookup
 const tools: { [key: string]: Function } = {
   list_files: list_files,
   read_file: read_file,
   edit_file: edit_file,
+  run_bash_command: run_bash_command,
 };
 
 const server = Bun.serve({

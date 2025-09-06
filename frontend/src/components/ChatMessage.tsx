@@ -50,6 +50,28 @@ const ToolResultMessage: React.FC<{ toolName: string; result: any }> = ({ toolNa
         </div>
       );
 
+    case "run_bash_command":
+      const { stdout, stderr } = result;
+      return (
+        <div className="tool-content bash-output">
+          {stdout && (
+            <div>
+              <p><strong>Output (stdout):</strong></p>
+              <pre><code>{stdout}</code></pre>
+            </div>
+          )}
+          {stderr && (
+            <div>
+              <p><strong>Error (stderr):</strong></p>
+              <pre><code className="error-message">{stderr}</code></pre>
+            </div>
+          )}
+          {!stdout && !stderr && (
+            <p>Command executed with no output.</p>
+          )}
+        </div>
+      );
+
     default:
       // Fallback for any other tools that might be added
       return (

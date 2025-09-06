@@ -94,7 +94,7 @@ const ChatWindow = () => {
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Try 'ls' or 'edit `file.txt` with content: ...'"
+          placeholder="Try 'ls' or '```bash\nnpm install\n```'"
         />
         <button type="submit">Send</button>
       </form>

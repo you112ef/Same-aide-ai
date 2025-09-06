@@ -4,9 +4,21 @@ interface ToolCall {
 }
 
 export function route(message: string): ToolCall | null {
-  const lowerCaseMessage = message.toLowerCase().trim();
+  const trimmedMessage = message.trim();
+
+  // Rule for bash commands in a markdown block
+  // e.g., ```bash\nls -l\n```
+  const bashCommandRegex = /^```bash\n([\s\S]+?)\n```$/s;
+  const bashMatch = trimmedMessage.match(bashCommandRegex);
+  if (bashMatch && bashMatch[1]) {
+    return {
+      toolName: "run_bash_command",
+      args: { command: bashMatch[1].trim() },
+    };
+  }
 
   // Rule for listing files
+  const lowerCaseMessage = trimmedMessage.toLowerCase();
   if (lowerCaseMessage === "ls" || lowerCaseMessage === "list files") {
     return { toolName: "list_files", args: {} };
   }
@@ -18,17 +30,15 @@ export function route(message: string): ToolCall | null {
   }
 
   // Rule for editing files, e.g., "edit `path/to/file.ts` with content:\n```tsx\n...\n```"
-  // This regex captures the file path and the content within the code block.
-  // The 's' flag allows '.' to match newlines.
   const editFileRegex = /^edit `([^`]+)` with content:\s*```(?:\w*\n)?([\s\S]+?)```$/s;
-  const editFileMatch = message.trim().match(editFileRegex);
+  const editFileMatch = trimmedMessage.match(editFileRegex);
 
   if (editFileMatch && editFileMatch[1] && editFileMatch[2]) {
     return {
       toolName: "edit_file",
       args: {
         path: editFileMatch[1],
-        content: editFileMatch[2].trim(), // Get the content from the code block
+        content: editFileMatch[2].trim(),
       },
     };
   }
