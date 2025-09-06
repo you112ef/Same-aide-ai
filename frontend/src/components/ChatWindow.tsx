@@ -28,7 +28,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ messages, onSendMessage }) => {
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Ask the AI to do something..."
+          placeholder="e.g., 'search for react best practices'"
         />
         <button type="submit">Send</button>
       </form>

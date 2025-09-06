@@ -73,6 +73,20 @@ const tools: OpenAI.Chat.Completions.ChatCompletionTool[] = [
       },
     },
   },
+  {
+    type: "function",
+    function: {
+      name: "web_search",
+      description: "Search the web for information, documentation, or code examples.",
+      parameters: {
+        type: "object",
+        properties: {
+          query: { type: "string", description: "The search query." },
+        },
+        required: ["query"],
+      },
+    },
+  },
 ];
 
 export async function route(message: string): Promise<ToolCall | { chatResponse: string } | null> {

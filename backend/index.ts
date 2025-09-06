@@ -3,6 +3,7 @@ import { list_files } from './tools/list_files';
 import { read_file } from './tools/read_file';
 import { edit_file } from './tools/edit_file';
 import { run_bash_command } from './tools/run_bash_command';
+import { web_search } from './tools/web_search';
 import type { ServerWebSocket } from 'bun';
 
 const tools: { [key: string]: Function } = {
@@ -10,6 +11,7 @@ const tools: { [key: string]: Function } = {
   read_file,
   edit_file,
   run_bash_command,
+  web_search,
 };
 
 const sockets = new Set<ServerWebSocket<unknown>>();
@@ -49,12 +51,10 @@ const server = Bun.serve({
     if (url.pathname === "/api/chat" && req.method === "POST") {
       try {
         const { message } = await req.json();
-        // The router now returns a more complex object
         const routeResult = await route(message);
         let responseData;
 
         if (routeResult && 'toolName' in routeResult) {
-          // It's a tool call
           const toolCall = routeResult;
           if (tools[toolCall.toolName]) {
             console.log(`Executing tool: ${toolCall.toolName} with args:`, toolCall.args);
@@ -65,10 +65,8 @@ const server = Bun.serve({
             responseData = { type: 'chat_message', reply: `Error: AI tried to call unknown tool '${toolCall.toolName}'` };
           }
         } else if (routeResult && 'chatResponse' in routeResult) {
-          // It's a direct chat response from the AI
           responseData = { type: 'chat_message', reply: routeResult.chatResponse };
         } else {
-          // Fallback if the router returns null or an unknown format
           responseData = { type: 'chat_message', reply: "Sorry, I couldn't determine the next action." };
         }
 

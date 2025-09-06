@@ -234,6 +234,28 @@ h2, h3 {
 
 .tool-content ul {
   padding-left: 20px;
+  list-style: none;
+}
+
+.search-results ul {
+  padding: 0;
+}
+
+.search-results li {
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #333;
+  padding-bottom: 1rem;
+}
+
+.search-results a {
+  font-weight: 600;
+  color: #646cff;
+}
+
+.search-results .snippet {
+  font-size: 0.9em;
+  color: #ccc;
+  margin-top: 4px;
 }
 
 .error-message {

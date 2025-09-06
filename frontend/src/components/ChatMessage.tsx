@@ -18,22 +18,16 @@ const ToolResultMessage: React.FC<{ toolName: string; result: any }> = ({ toolNa
   // Render based on the tool that was called
   switch (toolName) {
     case "list_files":
-      if (result.error) {
-        return <div className="error-message">Error: {result.error}</div>;
-      }
+      if (result.error) return <div className="error-message">Error: {result.error}</div>;
       return (
         <div className="tool-content">
           <p>Files in repository:</p>
-          <ul>
-            {result.files.map((file: string) => <li key={file}><code>{file}</code></li>)}
-          </ul>
+          <ul>{result.files.map((file: string) => <li key={file}><code>{file}</code></li>)}</ul>
         </div>
       );
 
     case "read_file":
-      if (result.error) {
-        return <div className="error-message">Error: {result.error}</div>;
-      }
+      if (result.error) return <div className="error-message">Error: {result.error}</div>;
       return (
         <div className="tool-content">
           <p>File content:</p>
@@ -42,44 +36,37 @@ const ToolResultMessage: React.FC<{ toolName: string; result: any }> = ({ toolNa
       );
 
     case "edit_file":
-      if (result.error) {
-        return <div className="error-message">Error: {result.error}</div>;
-      }
-      return (
-        <div className="tool-content">
-          <p>{result.message}</p>
-        </div>
-      );
+      if (result.error) return <div className="error-message">Error: {result.error}</div>;
+      return <div className="tool-content"><p>{result.message}</p></div>;
 
     case "run_bash_command":
       const { stdout, stderr } = result;
       return (
         <div className="tool-content bash-output">
-          {stdout && (
-            <div>
-              <p><strong>Output (stdout):</strong></p>
-              <pre><code>{stdout}</code></pre>
-            </div>
-          )}
-          {stderr && (
-            <div>
-              <p><strong>Error (stderr):</strong></p>
-              <pre><code className="error-message">{stderr}</code></pre>
-            </div>
-          )}
-          {!stdout && !stderr && (
-            <p>Command executed with no output.</p>
-          )}
+          {stdout && (<div><p><strong>Output (stdout):</strong></p><pre><code>{stdout}</code></pre></div>)}
+          {stderr && (<div><p><strong>Error (stderr):</strong></p><pre><code className="error-message">{stderr}</code></pre></div>)}
+          {!stdout && !stderr && <p>Command executed with no output.</p>}
+        </div>
+      );
+
+    case "web_search":
+      if (result.error) return <div className="error-message">Error: {result.error}</div>;
+      return (
+        <div className="tool-content search-results">
+          <p><strong>Web Search Results:</strong></p>
+          <ul>
+            {result.results.map((res: any, index: number) => (
+              <li key={index}>
+                <a href={res.link} target="_blank" rel="noopener noreferrer">{res.title}</a>
+                <p className="snippet">{res.snippet}</p>
+              </li>
+            ))}
+          </ul>
         </div>
       );
 
     default:
-      // Fallback for any other tools that might be added
-      return (
-        <div className="tool-content">
-          <pre>{JSON.stringify(result, null, 2)}</pre>
-        </div>
-      );
+      return <div className="tool-content"><pre>{JSON.stringify(result, null, 2)}</pre></div>;
   }
 };
 
@@ -93,9 +80,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
       case "tool_result":
         return (
           <div className="tool-result">
-            <p className="tool-title">
-              <strong>Tool Executed:</strong> <code>{message.toolName}</code>
-            </p>
+            <p className="tool-title"><strong>Tool Executed:</strong> <code>{message.toolName}</code></p>
             <ToolResultMessage toolName={message.toolName!} result={message.content} />
           </div>
         );
@@ -112,11 +97,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
     }
   };
 
-  return (
-    <div className={`chat-message ${messageClass}`}>
-      {renderContent()}
-    </div>
-  );
+  return <div className={`chat-message ${messageClass}`}>{renderContent()}</div>;
 };
 
 export default ChatMessage;
