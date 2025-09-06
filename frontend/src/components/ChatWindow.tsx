@@ -13,7 +13,7 @@ const ChatWindow = () => {
   useEffect(() => {
     const fetchInitialMessage = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api");
+        const response = await fetch("/api");
         const data = await response.json();
         setMessages([{ sender: "ai", text: data.message }]);
       } catch (error) {
@@ -24,13 +24,30 @@ const ChatWindow = () => {
     fetchInitialMessage();
   }, []);
 
-  const handleSendMessage = (e: React.FormEvent) => {
+  const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     if (input.trim()) {
       const newUserMessage: Message = { sender: "user", text: input };
-      setMessages(prevMessages => [...prevMessages, newUserMessage]);
+      const newMessages = [...messages, newUserMessage];
+      setMessages(newMessages);
       setInput("");
-      // TODO: Send the message to the AI backend and get a response
+
+      try {
+        const response = await fetch("/api/chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ message: input }),
+        });
+        const data = await response.json();
+        const aiMessage: Message = { sender: "ai", text: data.reply };
+        setMessages([...newMessages, aiMessage]);
+      } catch (error) {
+        const errorMessage: Message = { sender: "ai", text: "Failed to get a response from the AI." };
+        setMessages([...newMessages, errorMessage]);
+        console.error(error);
+      }
     }
   };
 
