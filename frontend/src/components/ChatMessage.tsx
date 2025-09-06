@@ -40,6 +40,16 @@ const ToolResultMessage: React.FC<{ toolName: string; result: any }> = ({ toolNa
         </div>
       );
 
+    case "edit_file":
+      if (result.error) {
+        return <div className="error-message">Error: {result.error}</div>;
+      }
+      return (
+        <div className="tool-content">
+          <p>{result.message}</p>
+        </div>
+      );
+
     default:
       // Fallback for any other tools that might be added
       return (

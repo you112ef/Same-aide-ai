@@ -94,7 +94,7 @@ const ChatWindow = () => {
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Type 'ls' or 'read `package.json`'..."
+          placeholder="Try 'ls' or 'edit `file.txt` with content: ...'"
         />
         <button type="submit">Send</button>
       </form>
