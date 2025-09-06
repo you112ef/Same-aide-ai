@@ -3,9 +3,10 @@ import React from "react";
 // Define a more detailed structure for our messages
 export interface Message {
   sender: "user" | "ai";
-  type: "chat_message" | "tool_result";
+  type: "chat_message" | "tool_result" | "tool_stream";
   content: any; // Can be a string for chat or an object for tool results
   toolName?: string;
+  streamContent?: { stdout?: string; stderr?: string };
 }
 
 interface ChatMessageProps {
@@ -85,18 +86,35 @@ const ToolResultMessage: React.FC<{ toolName: string; result: any }> = ({ toolNa
 const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
   const messageClass = message.sender === "user" ? "user-message" : "ai-message";
 
+  const renderContent = () => {
+    switch (message.type) {
+      case "chat_message":
+        return <p>{message.content}</p>;
+      case "tool_result":
+        return (
+          <div className="tool-result">
+            <p className="tool-title">
+              <strong>Tool Executed:</strong> <code>{message.toolName}</code>
+            </p>
+            <ToolResultMessage toolName={message.toolName!} result={message.content} />
+          </div>
+        );
+      case "tool_stream":
+        const { stdout, stderr } = message.streamContent || {};
+        return (
+          <pre className="tool-stream">
+            {stdout && <span className="stdout">{stdout}</span>}
+            {stderr && <span className="stderr error-message">{stderr}</span>}
+          </pre>
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className={`chat-message ${messageClass}`}>
-      {message.type === "chat_message" ? (
-        <p>{message.content}</p>
-      ) : (
-        <div className="tool-result">
-          <p className="tool-title">
-            <strong>Tool Executed:</strong> <code>{message.toolName}</code>
-          </p>
-          <ToolResultMessage toolName={message.toolName!} result={message.content} />
-        </div>
-      )}
+      {renderContent()}
     </div>
   );
 };
