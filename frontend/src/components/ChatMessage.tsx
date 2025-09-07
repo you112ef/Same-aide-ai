@@ -49,22 +49,6 @@ const ToolResultMessage: React.FC<{ toolName: string; result: any }> = ({ toolNa
         </div>
       );
 
-    case "web_search":
-      if (result.error) return <div className="error-message">Error: {result.error}</div>;
-      return (
-        <div className="tool-content search-results">
-          <p><strong>Web Search Results:</strong></p>
-          <ul>
-            {result.results.map((res: any, index: number) => (
-              <li key={index}>
-                <a href={res.link} target="_blank" rel="noopener noreferrer">{res.title}</a>
-                <p className="snippet">{res.snippet}</p>
-              </li>
-            ))}
-          </ul>
-        </div>
-      );
-
     default:
       return <div className="tool-content"><pre>{JSON.stringify(result, null, 2)}</pre></div>;
   }

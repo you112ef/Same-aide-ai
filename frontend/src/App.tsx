@@ -4,6 +4,7 @@ import ChatWindow from "./components/ChatWindow";
 import FileExplorer from "./components/FileExplorer";
 import LivePreview from "./components/LivePreview";
 import CodeEditor from "./components/CodeEditor";
+import VersionHistory from "./components/VersionHistory";
 import { Message } from "./components/ChatMessage";
 
 function App() {
@@ -90,6 +91,7 @@ function App() {
       <div className="main-pane">
         <div className="editor-area">
           <FileExplorer messages={messages} onSendMessage={sendMessage} onFileSelect={handleFileSelect} />
+          <VersionHistory messages={messages} onSendMessage={sendMessage} />
           <CodeEditor
             filePath={activeFile}
             fileContent={editorContent}

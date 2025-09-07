@@ -57,13 +57,21 @@ body {
   height: 100%;
 }
 
-.file-explorer, .editor-placeholder, .live-preview {
+.file-explorer, .editor-placeholder, .live-preview, .version-history {
   border: 1px solid #444;
   border-radius: 8px;
   padding: 1rem;
   margin-bottom: 1rem;
   display: flex;
   flex-direction: column;
+}
+
+.file-explorer, .version-history {
+  height: auto;
+  flex-shrink: 0;
+}
+
+.code-editor-container {
   height: 100%;
 }
 
@@ -99,12 +107,25 @@ body {
   flex-shrink: 0;
 }
 
-.file-explorer-header, .code-editor-header {
+.file-explorer-header, .code-editor-header, .version-history-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
   flex-shrink: 0;
+}
+
+.version-history-content ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.version-history-content li {
+  padding: 4px 0;
+  font-family: monospace;
 }
 
 .file-explorer-content {

@@ -76,15 +76,23 @@ const tools: OpenAI.Chat.Completions.ChatCompletionTool[] = [
   {
     type: "function",
     function: {
-      name: "web_search",
-      description: "Search the web for information, documentation, or code examples.",
+      name: "save_snapshot",
+      description: "Save the current state of the project as a snapshot (commit) with a descriptive message.",
       parameters: {
         type: "object",
         properties: {
-          query: { type: "string", description: "The search query." },
+          message: { type: "string", description: "A descriptive message for the snapshot." },
         },
-        required: ["query"],
+        required: ["message"],
       },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "list_snapshots",
+      description: "List all the previously saved snapshots (commits) of the project.",
+      parameters: { type: "object", properties: {} },
     },
   },
 ];

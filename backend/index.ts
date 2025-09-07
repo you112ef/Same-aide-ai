@@ -3,7 +3,8 @@ import { list_files } from './tools/list_files';
 import { read_file } from './tools/read_file';
 import { edit_file } from './tools/edit_file';
 import { run_bash_command } from './tools/run_bash_command';
-import { web_search } from './tools/web_search';
+import { save_snapshot } from './tools/save_snapshot';
+import { list_snapshots } from './tools/list_snapshots';
 import type { ServerWebSocket } from 'bun';
 
 const tools: { [key: string]: Function } = {
@@ -11,7 +12,8 @@ const tools: { [key: string]: Function } = {
   read_file,
   edit_file,
   run_bash_command,
-  web_search,
+  save_snapshot,
+  list_snapshots,
 };
 
 const sockets = new Set<ServerWebSocket<unknown>>();
