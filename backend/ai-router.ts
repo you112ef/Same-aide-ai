@@ -95,6 +95,28 @@ const tools: OpenAI.Chat.Completions.ChatCompletionTool[] = [
       parameters: { type: "object", properties: {} },
     },
   },
+  {
+    type: "function",
+    function: {
+      name: "startup",
+      description: "Create a new web application project from a template.",
+      parameters: {
+        type: "object",
+        properties: {
+          framework: {
+            type: "string",
+            description: "The framework to use for the new project.",
+            enum: ["vite", "next"],
+          },
+          projectName: {
+            type: "string",
+            description: "The name of the new project directory.",
+          },
+        },
+        required: ["framework", "projectName"],
+      },
+    },
+  },
 ];
 
 export async function route(message: string): Promise<ToolCall | { chatResponse: string } | null> {

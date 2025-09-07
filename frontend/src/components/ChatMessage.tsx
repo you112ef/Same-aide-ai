@@ -1,10 +1,9 @@
 import React from "react";
 
-// Define a more detailed structure for our messages
 export interface Message {
   sender: "user" | "ai";
   type: "chat_message" | "tool_result" | "tool_stream";
-  content: any; // Can be a string for chat or an object for tool results
+  content: any;
   toolName?: string;
   streamContent?: { stdout?: string; stderr?: string };
 }
@@ -13,29 +12,27 @@ interface ChatMessageProps {
   message: Message;
 }
 
-// A specific component to render tool results for better readability
 const ToolResultMessage: React.FC<{ toolName: string; result: any }> = ({ toolName, result }) => {
-  // Render based on the tool that was called
   switch (toolName) {
     case "list_files":
+    case "list_snapshots":
       if (result.error) return <div className="error-message">Error: {result.error}</div>;
+      const items = result.files || result.snapshots || [];
+      const title = toolName === 'list_files' ? 'Files in repository:' : 'Snapshots:';
       return (
         <div className="tool-content">
-          <p>Files in repository:</p>
-          <ul>{result.files.map((file: string) => <li key={file}><code>{file}</code></li>)}</ul>
+          <p>{title}</p>
+          <ul>{items.map((item: any, index: number) => <li key={index}><code>{item.hash ? `${item.hash} - ${item.message}` : item}</code></li>)}</ul>
         </div>
       );
 
     case "read_file":
       if (result.error) return <div className="error-message">Error: {result.error}</div>;
-      return (
-        <div className="tool-content">
-          <p>File content:</p>
-          <pre><code>{result.content}</code></pre>
-        </div>
-      );
+      return <div className="tool-content"><p>File content:</p><pre><code>{result.content}</code></pre></div>;
 
     case "edit_file":
+    case "save_snapshot":
+    case "startup":
       if (result.error) return <div className="error-message">Error: {result.error}</div>;
       return <div className="tool-content"><p>{result.message}</p></div>;
 

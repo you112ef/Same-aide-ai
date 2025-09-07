@@ -52,13 +52,23 @@ function App() {
     }
   }, []);
 
-  // Effect to load file content into editor when a 'read_file' tool result arrives
+  // Effect to handle side-effects from tool results
   useEffect(() => {
     const lastMessage = messages[messages.length - 1];
-    if (lastMessage?.type === 'tool_result' && lastMessage.toolName === 'read_file' && !lastMessage.content.error) {
-      setEditorContent(lastMessage.content.content);
+    if (lastMessage?.type === 'tool_result' && !lastMessage.content.error) {
+      switch (lastMessage.toolName) {
+        case 'read_file':
+          setEditorContent(lastMessage.content.content);
+          break;
+        case 'startup':
+          // After a new project is created, automatically refresh the file explorer
+          sendMessage('list files');
+          break;
+        default:
+          break;
+      }
     }
-  }, [messages]);
+  }, [messages, sendMessage]);
 
   const handleFileSelect = (filePath: string) => {
     if (filePath.endsWith('/')) return; // It's a directory
