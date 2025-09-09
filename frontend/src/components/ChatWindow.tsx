@@ -1,52 +1,34 @@
-import React, { useState, useEffect } from "react";
-import ChatMessage from "./ChatMessage";
+import React, { useState } from "react";
+import ChatMessage, { Message } from "./ChatMessage";
 
-interface Message {
-  sender: "user" | "ai";
-  text: string;
+interface ChatWindowProps {
+  messages: Message[];
+  onSendMessage: (message: string) => void;
 }
 
-const ChatWindow = () => {
-  const [messages, setMessages] = useState<Message[]>([]);
+const ChatWindow: React.FC<ChatWindowProps> = ({ messages, onSendMessage }) => {
   const [input, setInput] = useState("");
 
-  useEffect(() => {
-    const fetchInitialMessage = async () => {
-      try {
-        const response = await fetch("http://localhost:3000/api");
-        const data = await response.json();
-        setMessages([{ sender: "ai", text: data.message }]);
-      } catch (error) {
-        setMessages([{ sender: "ai", text: "Failed to connect to the backend." }]);
-        console.error(error);
-      }
-    };
-    fetchInitialMessage();
-  }, []);
-
-  const handleSendMessage = (e: React.FormEvent) => {
+  const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (input.trim()) {
-      const newUserMessage: Message = { sender: "user", text: input };
-      setMessages(prevMessages => [...prevMessages, newUserMessage]);
-      setInput("");
-      // TODO: Send the message to the AI backend and get a response
-    }
+    onSendMessage(input);
+    setInput("");
   };
 
   return (
     <div className="chat-window">
+      <h3>Conversation</h3>
       <div className="message-list">
         {messages.map((msg, index) => (
           <ChatMessage key={index} message={msg} />
         ))}
       </div>
-      <form onSubmit={handleSendMessage} className="chat-input-form">
+      <form onSubmit={handleFormSubmit} className="chat-input-form">
         <input
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Type your message..."
+          placeholder="e.g., 'search for react best practices'"
         />
         <button type="submit">Send</button>
       </form>
