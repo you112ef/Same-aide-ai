@@ -117,6 +117,17 @@ const tools: OpenAI.Chat.Completions.ChatCompletionTool[] = [
       },
     },
   },
+  {
+    type: "function",
+    function: {
+      name: "deploy",
+      description: "Deploy the frontend project to Vercel.",
+      parameters: {
+        type: "object",
+        properties: {},
+      },
+    },
+  },
 ];
 
 export async function route(message: string): Promise<ToolCall | { chatResponse: string } | null> {

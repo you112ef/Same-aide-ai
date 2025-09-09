@@ -83,6 +83,10 @@ body {
   flex-shrink: 0;
 }
 
+.preview-buttons button {
+  margin-left: 8px;
+}
+
 .live-preview-content {
   flex-grow: 1;
   background-color: #fff;

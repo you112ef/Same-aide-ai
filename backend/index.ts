@@ -6,6 +6,7 @@ import { run_bash_command } from './tools/run_bash_command';
 import { save_snapshot } from './tools/save_snapshot';
 import { list_snapshots } from './tools/list_snapshots';
 import { startup } from './tools/startup';
+import { deploy } from './tools/deploy';
 import type { ServerWebSocket } from 'bun';
 
 const tools: { [key: string]: Function } = {
@@ -16,6 +17,7 @@ const tools: { [key: string]: Function } = {
   save_snapshot,
   list_snapshots,
   startup,
+  deploy,
 };
 
 const sockets = new Set<ServerWebSocket<unknown>>();

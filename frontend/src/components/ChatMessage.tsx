@@ -33,8 +33,16 @@ const ToolResultMessage: React.FC<{ toolName: string; result: any }> = ({ toolNa
     case "edit_file":
     case "save_snapshot":
     case "startup":
+    case "deploy":
       if (result.error) return <div className="error-message">Error: {result.error}</div>;
-      return <div className="tool-content"><p>{result.message}</p></div>;
+      return (
+        <div className="tool-content">
+          <p>{result.message}</p>
+          {result.deploymentUrl && (
+            <p>URL: <a href={result.deploymentUrl} target="_blank" rel="noopener noreferrer">{result.deploymentUrl}</a></p>
+          )}
+        </div>
+      );
 
     case "run_bash_command":
       const { stdout, stderr } = result;

@@ -35,7 +35,10 @@ const LivePreview: React.FC<LivePreviewProps> = ({ onSendMessage, bashStream }) 
     <div className="live-preview">
       <div className="live-preview-header">
         <h3>Live Preview</h3>
-        <button onClick={handleStartServer}>Start/Restart Server</button>
+        <div className="preview-buttons">
+          <button onClick={handleStartServer}>Start Dev Server</button>
+          <button onClick={() => onSendMessage('deploy the project')}>Deploy to Production</button>
+        </div>
       </div>
       <div className="live-preview-content">
         {previewUrl ? (
